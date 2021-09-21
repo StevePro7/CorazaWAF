@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	//coraza "github.com/jptosso/coraza-waf"
+
+	coraza "github.com/jptosso/coraza-waf"
 	//_ "github.com/jptosso/coraza-waf/seclang"
 )
 
-// func initCoraza() {
+func initCoraza() {
 
-// 	coraza.NewWaf()
-// }
+	coraza.NewWaf()
+}
 
 // func parseRules(waf *coraza.Waf) {
 // 	parser, _ := seclang.NewParser(waf)
@@ -17,6 +18,6 @@ import (
 // }
 
 func main() {
-	//initCoraza()
-	fmt.Println("Hello there...!")
+	initCoraza()
+	fmt.Println("Hello there.!")
 }
