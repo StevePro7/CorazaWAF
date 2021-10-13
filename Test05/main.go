@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 
-	coraza "github.com/jptosso/coraza-waf"
+	"github.com/jptosso/coraza-waf"
 	"github.com/jptosso/coraza-waf/seclang"
 )
 
@@ -14,7 +15,11 @@ func initCoraza() *coraza.Waf {
 
 func parseRules(waf *coraza.Waf) {
 	parser, _ := seclang.NewParser(waf)
-	parser.FromString(`SecAction "id:1,phase:1,deny:403"`)
+	err := parser.FromString(`SecAction "id:1,phase:1,deny:403"`)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
 
 func main() {
@@ -38,13 +43,17 @@ func main() {
 	// 	// sw.Close()
 	// }
 
-	// Add response data from a strint or bytes
-	tx.ResponseBodyBuffer.Write([]byte("some response data"))
-	// Or dump a REsponse Body buffer into Coraza
+	// Add response data from a string or bytes
+	_, err := tx.ResponseBodyBuffer.Write([]byte("some response data"))
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	// Or dump a Response Body buffers into Coraza
 	//io.Copy(tx.ResponseBodyBuffer, res.Body)
 
 	// sw.WriteStatus(200)
-	// sw.Write(tx.REsponseBodyBuffer.Reader())
+	// sw.Write(tx.ResponseBodyBuffer.Reader())
 	// sw.Close()
 
 	fmt.Println("goodbye..!")

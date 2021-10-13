@@ -2,22 +2,27 @@ package main
 
 import (
 	"fmt"
-
-	coraza "github.com/jptosso/coraza-waf"
 	"github.com/jptosso/coraza-waf/seclang"
+	"log"
+
+	"github.com/jptosso/coraza-waf"
 )
 
-func initCoraza() {
-
-	coraza.NewWaf()
+func initCoraza() *coraza.Waf {
+	return coraza.NewWaf()
 }
 
 func parseRules(waf *coraza.Waf) {
 	parser, _ := seclang.NewParser(waf)
-	parser.FromString(`SecAction "id:1,phase:1,deny:403"`)
+	err := parser.FromString(`SecAction "id:1,phase:1,deny:403"`)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
 
 func main() {
-	initCoraza()
+	waf := initCoraza()
+	parseRules(waf)
 	fmt.Println("Hello there.!")
 }

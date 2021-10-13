@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 
-	coraza "github.com/jptosso/coraza-waf"
+	"github.com/jptosso/coraza-waf"
 	"github.com/jptosso/coraza-waf/seclang"
 )
 
@@ -14,7 +15,11 @@ func initCoraza() *coraza.Waf {
 
 func parseRules(waf *coraza.Waf) {
 	parser, _ := seclang.NewParser(waf)
-	parser.FromString(`SecAction "id:1,phase:1,deny:403"`)
+	err := parser.FromString(`SecAction "id:1,phase:1,deny:403"`)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
 
 func main() {

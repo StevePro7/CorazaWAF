@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 
-	coraza "github.com/jptosso/coraza-waf"
+	"github.com/jptosso/coraza-waf"
 	"github.com/jptosso/coraza-waf/seclang"
 )
 
@@ -14,7 +15,11 @@ func initCoraza() *coraza.Waf {
 
 func parseRules(waf *coraza.Waf) {
 	parser, _ := seclang.NewParser(waf)
-	parser.FromString(`SecAction "id:1,phase:1,deny:403"`)
+	err := parser.FromString(`SecAction "id:1,phase:1,deny:403"`)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
 
 func main() {
@@ -28,7 +33,7 @@ func main() {
 	// 127.0.0.1:55555 -> 127.0.0.1:80
 	tx.ProcessConnection("127.0.0.1", 55555, "127.0.0.1", 80)
 
-	// Request URI waws /some-url?with=args
+	// Request URI with /some-url?with=args
 	tx.ProcessUri("/some-url?with=args", "GET", "1.1")
 
 	// We add some headers
@@ -41,9 +46,14 @@ func main() {
 	if it := tx.ProcessRequestHeaders(); it != nil {
 		//return processInterruption(it)
 	}
+	tx.Interrupted()
 
 	// We add urlencoded POST data
-	tx.RequestBodyBuffer.Write([]byte("somepost=data&with=parameters"))
+	_, err := tx.RequestBodyBuffer.Write([]byte("somepost=data&with=parameters"))
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 	// We process phase 2 (Request Body)
 	if it, _ := tx.ProcessRequestBody(); it != nil {
 		//return processInterruption(it)
